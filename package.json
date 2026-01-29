@@ -1,0 +1,9 @@
+{
+  "name": "ai-call-agent-resilience",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test:retry": "node tests/scenario_retry.js",
+    "test:circuit": "node tests/scenario_circuit_open.js"
+  }
+}
