@@ -1,3 +1,13 @@
+Note:
+
+MockVoiceService simulates a third-party voice API such as ElevenLabs.
+
+MockLLMService simulates an external LLM provider.
+
+No real external APIs are called; failures are intentionally simulated.
+
+This allows deterministic testing of retries, circuit breakers, alerts, and recovery.
+
 # Project Structure & Purpose
 
 ## src/core/
