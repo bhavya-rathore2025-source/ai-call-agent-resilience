@@ -65,16 +65,18 @@ export async function handleCall(prompt) {
     logEvent({
       service: 'LLM',
       errorCategory: error.constructor.name,
-      message: 'LLM failed permanently',
+      message: 'LLM failed',
       circuitState: llmCircuit.getState(),
     })
-    sendAlert({
-      level: 'CRITICAL',
-      service: 'LLM',
-      message: 'LLM failed permanently. Call marked as failed.',
-    })
 
-    if (error instanceof PermanentError) return
+    if (error instanceof PermanentError) {
+      sendAlert({
+        level: 'CRITICAL',
+        service: 'LLM',
+        message: 'LLM permanent failure.',
+      })
+      return
+    }
   }
 
   // ---- VOICE STEP ----
