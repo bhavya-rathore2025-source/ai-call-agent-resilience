@@ -75,7 +75,7 @@ Logs system events to Google Sheets.
 
 Handles critical alerts.
 
-- Triggered on permanent failures or circuit breaker openings
+- Triggered when retries are exhausted or circuit breaker openings
 - Can be extended to email, Telegram, or webhooks
 
 ---
@@ -86,7 +86,7 @@ Handles critical alerts.
 
 Supports service recovery.
 
-- Works with the circuit breaker HALF-OPEN state
+- Periodically checks the health of external services
 - Allows automatic return to normal operation
 
 ---
@@ -153,3 +153,25 @@ Alerts are triggered when:
 - A dependency remains unavailable beyond a threshold
 
 Alerts notify administrators while ensuring the system continues running.
+
+## How to Run the Program
+
+1. Install dependencies:
+
+```bash
+npm install
+
+2. Configure Google Sheets logging:
+
+ ->Place service account credentials in config/googleCredentials.json
+
+ ->Share the Google Sheet with the service account email
+
+ ->Place google sheet id in logging/sheetLogger
+
+3. Run any test scenario:
+
+node tests/scenario_retry.js
+node tests/scenario_circuit_open.js
+node tests/scenario_recovery.js
+```
