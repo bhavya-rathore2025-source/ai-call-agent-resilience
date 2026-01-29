@@ -1,6 +1,7 @@
 import { retryWithBackoff } from './core/retry.js'
 import { CircuitBreaker } from './core/circuitBreaker.js'
 import { TransientError, PermanentError } from './core/errors.js'
+import { sendAlert } from './alerts/alertService.js'
 
 import { MockVoiceService } from './services/mockVoiceService.js'
 import { MockLLMService } from './services/mockLLMService.js'
@@ -54,6 +55,11 @@ export async function handleCall(prompt) {
       message: 'LLM failed permanently',
       circuitState: llmCircuit.getState(),
     })
+    sendAlert({
+      level: 'CRITICAL',
+      service: 'LLM',
+      message: 'LLM failed permanently. Call marked as failed.',
+    })
 
     if (error instanceof PermanentError) return
   }
@@ -85,6 +91,13 @@ export async function handleCall(prompt) {
     voiceCircuit.recordSuccess()
   } catch (error) {
     voiceCircuit.recordFailure()
+    if (voiceCircuit.getState() === 'OPEN') {
+      sendAlert({
+        level: 'WARNING',
+        service: 'VOICE',
+        message: 'Circuit breaker opened for voice service.',
+      })
+    }
 
     logEvent({
       service: 'VOICE',
@@ -92,6 +105,11 @@ export async function handleCall(prompt) {
       message: 'Voice service failed after retries',
       retryCount: retryConfig.maxRetries,
       circuitState: voiceCircuit.getState(),
+    })
+    sendAlert({
+      level: 'CRITICAL',
+      service: 'VOICE',
+      message: 'Voice service failed after retries. Call marked as failed.',
     })
   }
 }
