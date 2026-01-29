@@ -5,5 +5,9 @@
   "scripts": {
     "test:retry": "node tests/scenario_retry.js",
     "test:circuit": "node tests/scenario_circuit_open.js"
+  },
+  "dependencies": {
+    "google-auth-library": "^10.5.0",
+    "google-spreadsheet": "^5.0.2"
   }
 }
