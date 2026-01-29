@@ -1,0 +1,4 @@
+{
+  "failureThreshold": 3,
+  "cooldownMs": 5000
+}

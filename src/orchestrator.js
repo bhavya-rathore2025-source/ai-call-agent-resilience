@@ -5,9 +5,10 @@ import { TransientError, PermanentError } from './core/errors.js'
 import { MockVoiceService } from './services/mockVoiceService.js'
 import { MockLLMService } from './services/mockLLMService.js'
 import { logEvent } from './logging/logger.js'
+import { loadConfig } from './core/configLoader.js'
 
-import retryConfig from '../config/retryConfig.json' assert { type: 'json' }
-import circuitConfig from '../config/circuitConfig.json' assert { type: 'json' }
+const retryConfig = loadConfig('config/retryConfig.json')
+const circuitConfig = loadConfig('config/circuitConfig.json')
 
 // Initialize services
 const voiceService = new MockVoiceService()
@@ -88,7 +89,8 @@ export async function handleCall(prompt) {
     logEvent({
       service: 'VOICE',
       errorCategory: error.constructor.name,
-      message: 'Voice service failed',
+      message: 'Voice service failed after retries',
+      retryCount: retryConfig.maxRetries,
       circuitState: voiceCircuit.getState(),
     })
   }

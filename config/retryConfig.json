@@ -1,0 +1,5 @@
+{
+  "initialDelayMs": 500,
+  "backoffFactor": 2,
+  "maxRetries": 3
+}
