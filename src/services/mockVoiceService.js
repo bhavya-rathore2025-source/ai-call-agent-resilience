@@ -28,4 +28,10 @@ export class MockVoiceService {
         return `AUDIO_DATA_FOR: ${text}`
     }
   }
+  async healthCheck() {
+    if (this.mode === 'healthy') {
+      return true
+    }
+    throw new Error('Voice service unhealthy')
+  }
 }

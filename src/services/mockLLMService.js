@@ -28,4 +28,10 @@ export class MockLLMService {
         return `LLM_RESPONSE_FOR: ${prompt}`
     }
   }
+  async healthCheck() {
+    if (this.mode === 'healthy') {
+      return true
+    }
+    throw new Error('LLM service unhealthy')
+  }
 }

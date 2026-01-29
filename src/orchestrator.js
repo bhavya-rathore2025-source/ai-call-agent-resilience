@@ -2,7 +2,7 @@ import { retryWithBackoff } from './core/retry.js'
 import { CircuitBreaker } from './core/circuitBreaker.js'
 import { TransientError, PermanentError } from './core/errors.js'
 import { sendAlert } from './alerts/alertService.js'
-
+import { startHealthCheck } from './health/healthChecker.js'
 import { MockVoiceService } from './services/mockVoiceService.js'
 import { MockLLMService } from './services/mockLLMService.js'
 import { logEvent } from './logging/logger.js'
@@ -18,6 +18,19 @@ const llmService = new MockLLMService()
 // Circuit breakers (per service)
 const voiceCircuit = new CircuitBreaker(circuitConfig)
 const llmCircuit = new CircuitBreaker(circuitConfig)
+startHealthCheck({
+  serviceName: 'VOICE',
+  service: voiceService,
+  circuitBreaker: voiceCircuit,
+  intervalMs: 5000,
+})
+
+startHealthCheck({
+  serviceName: 'LLM',
+  service: llmService,
+  circuitBreaker: llmCircuit,
+  intervalMs: 5000,
+})
 
 export async function handleCall(prompt) {
   // ---- LLM STEP ----
